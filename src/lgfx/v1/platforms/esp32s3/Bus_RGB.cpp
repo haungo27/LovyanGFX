@@ -34,7 +34,9 @@ Contributors:
 #include <soc/lcd_periph.h>
 #include <soc/lcd_cam_reg.h>
 #include <soc/lcd_cam_struct.h>
+#if __has_include(<soc/gdma_channel.h>)
 #include <soc/gdma_channel.h>
+#endif
 #include <soc/gdma_reg.h>
 #include <soc/gdma_struct.h>
 

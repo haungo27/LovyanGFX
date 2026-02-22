@@ -37,6 +37,9 @@ Contributors:
 #include <driver/rtc_io.h>
 #include <soc/rtc.h>
 #include <soc/soc.h>
+#if __has_include(<soc/gpio_reg.h>)
+ #include <soc/gpio_reg.h>
+#endif
 #include <soc/i2c_reg.h>
 #include <soc/i2c_struct.h>
 #if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 3, 0))
@@ -152,7 +155,11 @@ Contributors:
  #endif
 
  #if !defined (SOC_GDMA_PAIRS_PER_GROUP_MAX)
-  #define SOC_GDMA_PAIRS_PER_GROUP_MAX SOC_GDMA_PAIRS_PER_GROUP
+  #if defined (SOC_GDMA_PAIRS_PER_GROUP)
+   #define SOC_GDMA_PAIRS_PER_GROUP_MAX SOC_GDMA_PAIRS_PER_GROUP
+  #else
+   #define SOC_GDMA_PAIRS_PER_GROUP_MAX 5
+  #endif
  #endif
 #endif
 
@@ -855,6 +862,7 @@ namespace lgfx
  #define I2C_ACK_ERR_INT_RAW_M I2C_NACK_INT_RAW_M
 #endif
 
+  #if !defined ( I2C_CLOCK_SRC_ATOMIC ) && defined ( PERIPH_I2C0_MODULE )
     __attribute__ ((unused))
     static periph_module_t getPeriphModule(int num)
     {
@@ -864,6 +872,7 @@ namespace lgfx
       return num == 0 ? PERIPH_I2C0_MODULE : PERIPH_I2C1_MODULE;
 #endif
     }
+  #endif
 
     static i2c_dev_t* getDev(int num)
     {
@@ -912,6 +921,7 @@ namespace lgfx
       }
     }
 #else
+  #if defined ( PERIPH_I2C0_MODULE )
     __attribute__ ((unused))
     static void i2c_periph_enable(int i2c_num)
     {
@@ -932,6 +942,16 @@ namespace lgfx
       auto mod = getPeriphModule(i2c_num);
       periph_module_reset(mod);
     }
+  #else
+    __attribute__ ((unused))
+    static void i2c_periph_enable(int) {}
+
+    __attribute__ ((unused))
+    static void i2c_periph_disable(int) {}
+
+    __attribute__ ((unused))
+    static void i2c_periph_reset(int) {}
+  #endif
 #endif
 
 #if defined ( CONFIG_IDF_TARGET_ESP32 ) || defined ( CONFIG_IDF_TARGET_ESP32S2 ) || !defined ( CONFIG_IDF_TARGET )
@@ -1079,7 +1099,7 @@ namespace lgfx
 #if __has_include(<driver/i2c_master.h>)
       if ((int8_t)pin_sda >= 0) {
         gpio_set_level(pin_sda, true);
-        gpio_iomux_out(pin_sda, PIN_FUNC_GPIO, false);
+        gpio_iomux_output(pin_sda, PIN_FUNC_GPIO);
         gpio_set_direction(pin_sda, GPIO_MODE_INPUT_OUTPUT_OD);
         gpio_set_pull_mode(pin_sda, GPIO_PULLUP_ONLY);
         esp_rom_gpio_connect_out_signal(pin_sda, i2c_periph_signal[i2c_num].sda_out_sig, 0, 0);
@@ -1087,7 +1107,7 @@ namespace lgfx
       }
       if ((int8_t)pin_scl >= 0) {
         gpio_set_level(pin_scl, true);
-        gpio_iomux_out(pin_scl, PIN_FUNC_GPIO, false);
+        gpio_iomux_output(pin_scl, PIN_FUNC_GPIO);
         gpio_set_direction(pin_scl, GPIO_MODE_INPUT_OUTPUT_OD);
         esp_rom_gpio_connect_out_signal(pin_scl, i2c_periph_signal[i2c_num].scl_out_sig, 0, 0);
         esp_rom_gpio_connect_in_signal(pin_scl, i2c_periph_signal[i2c_num].scl_in_sig, 0);

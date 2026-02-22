@@ -21,11 +21,19 @@ file(GLOB SRCS
 
 set(COMPONENT_SRCS ${SRCS})
 
+if (IDF_VERSION_MAJOR GREATER_EQUAL 6)
+    list(REMOVE_ITEM COMPONENT_SRCS
+         ${LGFX_ROOT}/src/lgfx/v1/platforms/esp32s3/Bus_Parallel8.cpp
+         ${LGFX_ROOT}/src/lgfx/v1/platforms/esp32s3/Bus_Parallel16.cpp
+         ${LGFX_ROOT}/src/lgfx/v1/platforms/esp32s3/Bus_RGB.cpp
+         ${LGFX_ROOT}/src/lgfx/v1/platforms/esp32s3/Panel_RGB.cpp)
+endif()
+
 if (IDF_VERSION_MAJOR GREATER_EQUAL 5)
     if(IDF_VERSION_MINOR GREATER_EQUAL 1)
-        set(COMPONENT_REQUIRES nvs_flash efuse esp_lcd driver esp_timer esp_mm)
+        set(COMPONENT_REQUIRES nvs_flash efuse esp_lcd esp_timer esp_mm driver esp_driver_gpio esp_driver_i2c esp_driver_spi esp_driver_ledc esp_driver_dma esp_driver_parlio)
     else()
-        set(COMPONENT_REQUIRES nvs_flash efuse esp_lcd driver esp_timer)
+        set(COMPONENT_REQUIRES nvs_flash efuse esp_lcd esp_timer driver esp_driver_gpio esp_driver_i2c esp_driver_spi esp_driver_ledc)
     endif()
 elseif ((IDF_VERSION_MAJOR EQUAL 4) AND (IDF_VERSION_MINOR GREATER 3) OR IDF_VERSION_MAJOR GREATER 4)
     set(COMPONENT_REQUIRES nvs_flash efuse esp_lcd)

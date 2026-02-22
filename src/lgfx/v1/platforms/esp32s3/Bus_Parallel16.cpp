@@ -31,7 +31,9 @@ Contributors:
 #include <soc/lcd_cam_reg.h>
 #include <soc/lcd_cam_struct.h>
 
+#if __has_include(<soc/gdma_channel.h>)
 #include <soc/gdma_channel.h>
+#endif
 #include <soc/gdma_reg.h>
 #if !defined (DMA_OUT_LINK_CH0_REG)
   #define DMA_OUT_LINK_CH0_REG       GDMA_OUT_LINK_CH0_REG
