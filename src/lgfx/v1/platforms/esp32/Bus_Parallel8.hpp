@@ -47,7 +47,7 @@ namespace lgfx
   public:
     struct config_t
     {
-      i2s_port_t i2s_port = I2S_NUM_0;
+      int i2s_port = I2S_NUM_0;
 
       // max 20MHz , 16MHz , 13.3MHz , 11.43MHz , 10MHz , 8.9MHz  and more ...
       uint32_t freq_write = 16000000;

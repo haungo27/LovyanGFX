@@ -542,7 +542,11 @@ namespace lgfx
 #endif
 
 #if !defined (CONFIG_IDF_TARGET) || defined (CONFIG_IDF_TARGET_ESP32)
-    static constexpr int default_spi_host = VSPI_HOST;
+  #if defined (SPI3_HOST)
+    static constexpr int default_spi_host = SPI3_HOST;
+  #else
+    static constexpr int default_spi_host = SPI2_HOST;
+  #endif
     static constexpr int spi_periph_num = 3;
 #else
     static constexpr int default_spi_host = SPI2_HOST;

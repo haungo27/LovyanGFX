@@ -42,6 +42,13 @@ Contributors:
 #include <driver/spi_common.h>
 #include <soc/spi_reg.h>
 
+#if !defined (HSPI_HOST) && defined (SPI2_HOST)
+ #define HSPI_HOST SPI2_HOST
+#endif
+#if !defined (VSPI_HOST) && defined (SPI3_HOST)
+ #define VSPI_HOST SPI3_HOST
+#endif
+
 #if __has_include(<esp_idf_version.h>)
  #include <esp_idf_version.h>
  #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(4, 3, 0)
@@ -90,7 +97,11 @@ namespace lgfx
       bool use_lock = true;
       uint8_t dma_channel = LGFX_ESP32_SPI_DMA_CH;
 #if !defined (CONFIG_IDF_TARGET) || defined (CONFIG_IDF_TARGET_ESP32)
-      spi_host_device_t spi_host = VSPI_HOST;
+  #if defined (SPI3_HOST)
+      spi_host_device_t spi_host = SPI3_HOST;
+  #else
+      spi_host_device_t spi_host = SPI2_HOST;
+  #endif
 #else
       spi_host_device_t spi_host = SPI2_HOST;
 #endif

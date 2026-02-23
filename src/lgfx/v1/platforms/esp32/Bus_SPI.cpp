@@ -1175,7 +1175,11 @@ label_start:
       periph_module_reset( PERIPH_SPI3_DMA_MODULE );
     }
 #elif defined( CONFIG_IDF_TARGET_ESP32 ) || !defined( CONFIG_IDF_TARGET )
+  #if defined (PERIPH_SPI_DMA_MODULE)
     periph_module_reset( PERIPH_SPI_DMA_MODULE );
+  #elif defined (PERIPH_SPI2_DMA_MODULE)
+    periph_module_reset( PERIPH_SPI2_DMA_MODULE );
+  #endif
 #endif
   }
 

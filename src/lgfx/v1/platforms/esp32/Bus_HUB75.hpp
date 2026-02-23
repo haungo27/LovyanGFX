@@ -51,7 +51,7 @@ namespace lgfx
     struct config_t
     {
       union {
-        i2s_port_t i2s_port = I2S_NUM_0;
+        int i2s_port = I2S_NUM_0;
         int port;
       };
 

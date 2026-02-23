@@ -46,7 +46,7 @@ namespace lgfx
 
   static __attribute__ ((always_inline)) inline volatile uint32_t* reg(uint32_t addr) { return (volatile uint32_t *)ETS_UNCACHED_ADDR(addr); }
 
-  static i2s_dev_t* getDev(i2s_port_t port)
+  static i2s_dev_t* getDev(int port)
   {
 #if defined (CONFIG_IDF_TARGET_ESP32S2)
     return &I2S0;

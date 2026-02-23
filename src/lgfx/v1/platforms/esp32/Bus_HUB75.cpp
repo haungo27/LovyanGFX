@@ -48,7 +48,7 @@ namespace lgfx
   static __attribute__ ((always_inline)) inline volatile uint32_t* reg(uint32_t addr) { return (volatile uint32_t *)ETS_UNCACHED_ADDR(addr); }
 
   __attribute__((always_inline))
-  static inline i2s_dev_t* getDev(i2s_port_t port)
+  static inline i2s_dev_t* getDev(int port)
   {
 #if SOC_I2C_NUM > 1
     return (port == 0) ? &I2S0 : &I2S1;
