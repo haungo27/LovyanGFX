@@ -35,6 +35,12 @@ Contributors:
  #include <esp_idf_version.h>
 #endif
 
+#if defined(ESP_IDF_VERSION_MAJOR) && (ESP_IDF_VERSION_MAJOR >= 6)
+ #define LGFX_HAS_PARALLEL16_DETECTOR 0
+#else
+ #define LGFX_HAS_PARALLEL16_DETECTOR 1
+#endif
+
 namespace lgfx
 {
  inline namespace v1
@@ -899,7 +905,7 @@ namespace lgfx
       }
     };
 
-#if defined (CONFIG_IDF_TARGET_ESP32S2) || defined (CONFIG_IDF_TARGET_ESP32S3)
+#if (defined (CONFIG_IDF_TARGET_ESP32S2) || defined (CONFIG_IDF_TARGET_ESP32S3)) && LGFX_HAS_PARALLEL16_DETECTOR
 
     struct _detector_parallel16_t : public _detector_t
     {
@@ -1009,7 +1015,7 @@ namespace lgfx
       }
     };
 
-#endif // (CONFIG_IDF_TARGET_ESP32S2) || defined (CONFIG_IDF_TARGET_ESP32S3)
+#endif // ((CONFIG_IDF_TARGET_ESP32S2) || (CONFIG_IDF_TARGET_ESP32S3)) && LGFX_HAS_PARALLEL16_DETECTOR
 
     lgfx::Panel_Device* _panel_last = nullptr;
     lgfx::ILight* _light_last = nullptr;
@@ -1392,6 +1398,8 @@ namespace lgfx
         }
       };
 
+    #if LGFX_HAS_PARALLEL16_DETECTOR
+
       // https://github.com/Makerfabs/Makerfabs-ESP32-S3-Parallel-TFT-with-Touch/
       struct _detector_Makerfabs_ESP32_S3_TFT_Touch_Parallel16_t : public _detector_parallel16_t
       {
@@ -1445,6 +1453,10 @@ namespace lgfx
           }
         }
       };
+
+    #endif // LGFX_HAS_PARALLEL16_DETECTOR
+
+    #if LGFX_HAS_PARALLEL16_DETECTOR
 
       // https://github.com/W00ng/ESP32-S3-HMI-DevKit/blob/master/components/bsp/include/bsp_board.h
       struct _detector_wywy_ESP32S3_HMI_DevKit_t : public _detector_parallel16_t
@@ -1503,6 +1515,8 @@ namespace lgfx
           }
         }
       };
+
+    #endif // LGFX_HAS_PARALLEL16_DETECTOR
 
       struct _detector_Feather_ESP32_S3_TFT_t : public _detector_spi_t
       {
@@ -1634,6 +1648,8 @@ namespace lgfx
 
 #elif defined (CONFIG_IDF_TARGET_ESP32S2)
 
+    #if LGFX_HAS_PARALLEL16_DETECTOR
+
       // https://github.com/Makerfabs/Makerfabs-ESP32-S2-Parallel-TFT-with-Touch/
       struct _detector_Makerfabs_ESP32_S2_TFT_Touch_Parallel16_t : public _detector_parallel16_t
       {
@@ -1710,6 +1726,8 @@ namespace lgfx
           }
         }
       };
+
+    #endif // LGFX_HAS_PARALLEL16_DETECTOR
 
       // https://docs.espressif.com/projects/esp-idf/en/latest/esp32s2/hw-reference/esp32s2/user-guide-esp32-s2-kaluga-1-kit.html
       struct _detector_ESP32_S2_Kaluga_1_t : public _detector_spi_t
@@ -3366,8 +3384,12 @@ namespace lgfx
       static constexpr const _detector_ESP32_S3_BOX_Lite_t                       detector_ESP32_S3_BOX_Lite;
       static constexpr const _detector_ESP32_S3_BOX_V3_t                         detector_ESP32_S3_BOX_V3;
       static constexpr const _detector_Makerfabs_ESP32_S3_TFT_Touch_SPI_t        detector_Makerfabs_ESP32_S3_TFT_Touch_SPI;
+    #if LGFX_HAS_PARALLEL16_DETECTOR
       static constexpr const _detector_Makerfabs_ESP32_S3_TFT_Touch_Parallel16_t detector_Makerfabs_ESP32_S3_TFT_Touch_Parallel16;
+    #endif
+    #if LGFX_HAS_PARALLEL16_DETECTOR
       static constexpr const _detector_wywy_ESP32S3_HMI_DevKit_t                 detector_wywy_ESP32S3_HMI_DevKit;
+    #endif
       static constexpr const _detector_Feather_ESP32_S3_TFT_t                    detector_Feather_ESP32_S3_TFT;
       static constexpr const _detector_board_LoLinS3Pro_7735_t                   detector_board_LoLinS3Pro_7735;
       static constexpr const _detector_board_LoLinS3Pro_9341_t                   detector_board_LoLinS3Pro_9341;
@@ -3393,10 +3415,10 @@ namespace lgfx
 #if defined ( LGFX_AUTODETECT ) || defined ( LGFX_MAKERFABS_TFT_TOUCH_SPI )
         &detector_Makerfabs_ESP32_S3_TFT_Touch_SPI,
 #endif
-#if defined ( LGFX_AUTODETECT ) || defined ( LGFX_MAKERFABS_TFT_TOUCH_PARALLEL16 )
+#if LGFX_HAS_PARALLEL16_DETECTOR && (defined ( LGFX_AUTODETECT ) || defined ( LGFX_MAKERFABS_TFT_TOUCH_PARALLEL16 ))
         &detector_Makerfabs_ESP32_S3_TFT_Touch_Parallel16,
 #endif
-#if defined ( LGFX_AUTODETECT ) || defined ( LGFX_WYWY_ESP32S3_HMI_DEVKIT )
+#if LGFX_HAS_PARALLEL16_DETECTOR && (defined ( LGFX_AUTODETECT ) || defined ( LGFX_WYWY_ESP32S3_HMI_DEVKIT ))
         &detector_wywy_ESP32S3_HMI_DevKit,
 #endif
 
@@ -3418,7 +3440,9 @@ namespace lgfx
 #elif defined (CONFIG_IDF_TARGET_ESP32S2)
 
       static constexpr const _detector_ESP32_S2_Kaluga_1_t                        detector_ESP32_S2_Kaluga_1;
+    #if LGFX_HAS_PARALLEL16_DETECTOR
       static constexpr const _detector_Makerfabs_ESP32_S2_TFT_Touch_Parallel16_t  detector_Makerfabs_ESP32_S2_TFT_Touch_Parallel16;
+    #endif
       static constexpr const _detector_Feather_ESP32_S2_TFT_t                     detector_Feather_ESP32_S2_TFT;
       static constexpr const _detector_FunHouse_t                                 detector_FunHouse;
 
@@ -3428,7 +3452,7 @@ namespace lgfx
 #if defined ( LGFX_AUTODETECT ) || defined ( LGFX_ESP32_S2_KALUGA_1 )
         &detector_ESP32_S2_Kaluga_1,
 #endif
-#if defined ( LGFX_AUTODETECT ) || defined ( LGFX_MAKERFABS_TFT_TOUCH_PARALLEL16 )
+#if LGFX_HAS_PARALLEL16_DETECTOR && (defined ( LGFX_AUTODETECT ) || defined ( LGFX_MAKERFABS_TFT_TOUCH_PARALLEL16 ))
         &detector_Makerfabs_ESP32_S2_TFT_Touch_Parallel16,
 #endif
 
