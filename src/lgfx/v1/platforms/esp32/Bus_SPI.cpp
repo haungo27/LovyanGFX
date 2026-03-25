@@ -208,7 +208,7 @@ namespace lgfx
   {
     if (pin >= GPIO_NUM_MAX) return;
     gpio_reset_pin( (gpio_num_t)pin);
-    gpio_matrix_out((uint32_t)pin, SIG_GPIO_OUT_IDX, false, false);
+    rom_gpio_matrix_out((uint32_t)pin, SIG_GPIO_OUT_IDX, false, false);
     // gpio_matrix_in には、ArduinoESP32 v1.0.x系では重大なバグがある。(無関係なピンに対して設定変更が行われることがある)
     // gpio_matrix_in( (gpio_num_t)pin, 0x100, 0   );
   }
